@@ -1,0 +1,84 @@
+﻿using System.Collections.Generic;
+
+using Exiled.API.Features;
+using Exiled.Events.EventArgs.Player;
+
+using static NightVisionGoggles.NightVisionGoggles;
+
+using Light = Exiled.API.Features.Toys.Light;
+using PlayerEvent = Exiled.Events.Handlers.Player;
+using ServerEvent = Exiled.Events.Handlers.Server;
+
+namespace NightVisionGoggles
+{
+    public class EventHandlers
+    {
+        public HashSet<Player> DirtyPlayers { get; set; } = [];
+
+        public void Subscribe()
+        {
+            ServerEvent.WaitingForPlayers += OnWaitingforPlayers;
+
+            PlayerEvent.Verified += OnVerified;
+            PlayerEvent.ChangingRole += OnChangingRole;
+            PlayerEvent.ChangingSpectatedPlayer += OnChangingSpectatedPlayer;
+        }
+
+        public void Unsubscribe()
+        {
+            ServerEvent.WaitingForPlayers -= OnWaitingforPlayers;
+
+            PlayerEvent.Verified -= OnVerified;
+            PlayerEvent.ChangingRole -= OnChangingRole;
+            PlayerEvent.ChangingSpectatedPlayer -= OnChangingSpectatedPlayer;
+        }
+
+        private void OnWaitingforPlayers()
+        {
+            DirtyPlayers.Clear();
+        }
+
+        private void OnVerified(VerifiedEventArgs ev)
+        {
+            if (!Plugin.Instance.Config.FakeLightSettings.AddFakeLight)
+                return;
+
+            foreach (Light light in NVG.Lights.Values)
+            {
+                ev.Player.HideNetworkIdentity(light.Base.netIdentity);
+            }
+        }
+
+        private void OnChangingRole(ChangingRoleEventArgs ev)
+        {
+            if (NVG.Lights.ContainsKey(ev.Player))
+                NVG.DisableNVG(ev.Player.ReferenceHub);
+
+            if (DirtyPlayers.Contains(ev.Player))
+            {
+                foreach (Light light in NVG.Lights.Values)
+                {
+                    ev.Player.HideNetworkIdentity(light.Base.netIdentity);
+                }
+            }
+        }
+
+        private void OnChangingSpectatedPlayer(ChangingSpectatedPlayerEventArgs ev)
+        {
+            if (!Plugin.Instance.Config.FakeLightSettings.AddFakeLight)
+                return;
+
+            if (ev.OldTarget != null && NVG.Lights.ContainsKey(ev.OldTarget))
+            {
+                ev.Player.HideNetworkIdentity(NVG.Lights[ev.OldTarget]?.Base?.netIdentity);
+                DirtyPlayers.Remove(ev.Player);
+            }  
+
+            if (ev.NewTarget != null && NVG.Lights.ContainsKey(ev.NewTarget))
+            {
+                ev.Player.ShowHidedNetworkIdentity(NVG.Lights[ev.NewTarget]?.Base?.netIdentity);
+                DirtyPlayers.Add(ev.Player);
+            }
+        }
+    }
+}
