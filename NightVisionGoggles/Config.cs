@@ -12,17 +12,17 @@ namespace NightVisionGoggles
 
         public bool Debug { get; set; } = false;
 
-        public byte NightVisionInsentity { get; set; } = 20;
+        public byte NightVisionInsentity { get; set; } = 5;
 
         [Description("Simulate the temporary darkness when wearing the glasses")]
         public bool SimulateTemporaryDarkness { get; set; } = true;
 
         [Description("Wearing time (default 5)")]
-        public bool OverrideWearingTime { get; set; } = true;
+        public bool OverrideWearingTime { get; set; } = false;
         public float WearingTime { get; set; } = 1f;
 
         [Description("Removal time (default 5.1)")]
-        public bool OverrideWearingOffTime { get; set; } = true;
+        public bool OverrideWearingOffTime { get; set; } = false;
         public float WearingOffTime { get; set; } = 1f;
 
         public NightVisionGoggles NVG { get; set; } = new NightVisionGoggles();
