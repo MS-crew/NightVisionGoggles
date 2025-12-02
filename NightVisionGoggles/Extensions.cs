@@ -10,12 +10,6 @@ namespace NightVisionGoggles
 {
     internal static class Extensions
     {
-        internal static void PatchSingleType(this Harmony harmony, Type patchClass)
-        {
-            PatchClassProcessor processor = new(harmony, patchClass);
-            processor.Patch();
-        }
-
         internal static void ShowHidedNetworkIdentity(this Player player, NetworkIdentity identity)
         {
             Server.SendSpawnMessage.Invoke(null, [identity, player.Connection]);

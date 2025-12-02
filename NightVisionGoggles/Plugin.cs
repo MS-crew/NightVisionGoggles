@@ -36,7 +36,7 @@ namespace NightVisionGoggles
             EventHandlers.Subscribe();
 
             harmony = new Harmony(Prefix + DateTime.Now.Ticks);
-            DoDynamicPatchs();
+            harmony.PatchAll();
 
             base.OnEnabled();
         }
@@ -51,22 +51,6 @@ namespace NightVisionGoggles
             Instance = null;
 
             base.OnDisabled();
-        }
-
-        private void DoDynamicPatchs()
-        {
-            if (Config.OverrideWearingTime)
-            {
-                harmony.PatchSingleType(typeof(SetWearingTime));
-            }
-
-            if (Config.OverrideWearingOffTime)
-            {
-                harmony.PatchSingleType(typeof(SetWearOffTime));
-            }
-
-            harmony.PatchSingleType(typeof(BlockBadEffect));
-            harmony.PatchSingleType(typeof(BlockForceDrop));
         }
     }
 }
