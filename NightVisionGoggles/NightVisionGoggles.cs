@@ -116,8 +116,7 @@ namespace NightVisionGoggles
                 {
                     Plugin.Instance.EventHandlers.DirtyPlayers.Add(ply);//next update fix
                     continue;
-                }
-                    
+                }     
 
                 ply.HideNetworkIdentity(light.Base.netIdentity);
             }
