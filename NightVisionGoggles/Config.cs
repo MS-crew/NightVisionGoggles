@@ -37,11 +37,13 @@ namespace NightVisionGoggles
 
             public float InnerSpotAngle { get; set; } = 0f;
 
+            public byte MovementSmoothing { get; set; } = 60;
+
             public Color Color { get; set; } = Color.green;
 
             public bool TrackCameraRotation { get; set; } = true;
 
-            public float TrackCameraRotationInterval { get; set; } = 0.01f;
+            public float TrackCameraRotationInterval { get; set; } = 0.1f;
 
             [Description("You can use this types `Spot, Point, Directional`")]
             public LightType LightType { get; set; } = LightType.Spot;

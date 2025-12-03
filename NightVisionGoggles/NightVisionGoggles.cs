@@ -127,6 +127,7 @@ namespace NightVisionGoggles
 
             light.LightType = config.LightSettings.LightType;
             light.ShadowType = config.LightSettings.ShadowType;
+            light.MovementSmoothing = config.LightSettings.MovementSmoothing;
 
             Lights[player] = light;
 
