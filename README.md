@@ -31,12 +31,12 @@ Thank you for using our plugin and helping us improve it!
 ```yml
 is_enabled: true
 debug: false
-night_vision_insentity: 5
+night_vision_effect_insentity: 1
 # Simulate the temporary darkness when wearing the glasses
-simulate_temporary_darkness: true
+simulate_temporary_darkness: false
 # Wearing time (default 5)
 wearing_time: 1
-# Removal time (default 5.1)
+# Removal time (default 5.1 set less than 5.1)
 wearing_off_time: 1
 n_v_g:
   id: 757
@@ -54,13 +54,19 @@ n_v_g:
     x: 1
     y: 1
     z: 1
-fake_light_settings:
+light_settings:
   range: 50
   intensity: 70
+  spot_angle: 90
+  inner_spot_angle: 0
   color:
     r: 0
     g: 1
     b: 0
     a: 1
+  track_camera_rotation: true
+  track_camera_rotation_interval: 0.1
+  # You can use this types `Spot, Point, Directional`
+  light_type: Spot
   shadow_type: None
 ```
