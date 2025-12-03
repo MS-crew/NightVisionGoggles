@@ -1,7 +1,7 @@
 <h1 align="center">Night Vision Goggles</h1>
 <div align="center">
 <a href="https://github.com/MS-crew/NightVisionGoggles/releases"><img src="https://img.shields.io/github/downloads/MS-crew/NightVisionGoggles/total?style=for-the-badge&logo=githubactions&label=Downloads" href="https://github.com/MS-crew/NightVisionGoggles/releases" alt="GitHub Release Download"></a>
-<a href="https://github.com/MS-crew/NightVisionGoggles/releases"><img src="https://img.shields.io/badge/Build-1.0.1-brightgreen?style=for-the-badge&logo=gitbook" href="https://github.com/MS-crew/NightVisionGoggles/releases" alt="GitHub Releases"></a>
+<a href="https://github.com/MS-crew/NightVisionGoggles/releases"><img src="https://img.shields.io/badge/Build-1.1.0-brightgreen?style=for-the-badge&logo=gitbook" href="https://github.com/MS-crew/NightVisionGoggles/releases" alt="GitHub Releases"></a>
 <a href="https://github.com/MS-crew/NightVisionGoggles/blob/master/LICENSE.txt"><img src="https://img.shields.io/badge/Licence-GPL_3.0-blue?style=for-the-badge&logo=gitbook" href="https://github.com/MS-crew/NightVisionGoggles/blob/master/LICENSE.txt" alt="General Public License v3.0"></a>
 <a href="https://github.com/ExMod-Team/EXILED"><img src="https://img.shields.io/badge/Exiled-9.10.0-red?style=for-the-badge&logo=gitbook" href="https://github.com/ExMod-Team/EXILED" alt="GitHub Exiled"></a>
 
