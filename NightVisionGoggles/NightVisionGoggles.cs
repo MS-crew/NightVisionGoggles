@@ -5,7 +5,6 @@ using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Attributes;
 using Exiled.API.Features.Spawn;
-using Exiled.API.Features.Toys;
 using Exiled.CustomItems.API.Features;
 using Exiled.Events.EventArgs.Scp1344;
 
@@ -21,7 +20,6 @@ using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
 
 using UnityEngine;
 
-using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 
 using Light = Exiled.API.Features.Toys.Light;
@@ -110,16 +108,13 @@ namespace NightVisionGoggles
             player.ReferenceHub.EnableWearables(WearableElements.Scp1344Goggles);
 
             if (!config.SimulateTemporaryDarkness)
-                Timing.CallDelayed(1, ()=> player.DisableEffect(EffectType.Blinded));
+                Timing.CallDelayed(config.WearingTime + 0.5f, ()=> player.DisableEffect(EffectType.Blinded));
 
-            Light light = Light.Create(null, null, null, spawn: true, color: config.LightSettings.Color);
-            light.Transform.SetParent(player.Transform, false);
+            Light light = Light.Create(player.CameraTransform.position, player.Rotation.eulerAngles, null, spawn: true, color: config.LightSettings.Color);
+            light.Transform.SetParent(player.Transform, true);
 
             light.SpotAngle = config.LightSettings.SpotAngle;
             light.InnerSpotAngle = config.LightSettings.InnerSpotAngle;
-
-            light.Rotation = player.Rotation;
-            light.Position = player.CameraTransform.position;
 
             light.Range = config.LightSettings.Range;
             light.Intensity = config.LightSettings.Intensity;

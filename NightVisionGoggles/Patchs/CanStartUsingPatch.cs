@@ -1,10 +1,7 @@
-﻿using Exiled.API.Features;
+﻿using HarmonyLib;
 
-using HarmonyLib;
-
+using InventorySystem.Items;
 using InventorySystem.Items.Usables.Scp1344;
-
-using static NightVisionGoggles.NightVisionGoggles;
 
 namespace NightVisionGoggles.Patchs
 {
@@ -16,12 +13,18 @@ namespace NightVisionGoggles.Patchs
             if (!__result)
                 return;
 
-            if (!NVG.TrackedSerials.Contains(__instance.ItemSerial))
-                return;
+            foreach (ItemBase item in __instance.OwnerInventory.UserInventory.Items.Values)
+            {
+                if (item.ItemTypeId != ItemType.SCP1344)
+                    continue;
 
-            Player player = Player.Get(__instance.Owner);
-            if (NVG.Lights.ContainsKey(player))
+                Scp1344Item scp1344 = item as Scp1344Item;
+                if (!scp1344.IsWorn)
+                    continue;
+
                 __result = false;
+                break;
+            }
         }
     }
 }
