@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using CustomPlayerEffects;
+
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Attributes;
@@ -45,7 +47,6 @@ namespace NightVisionGoggles
 
         public override float Weight { get; set; } = 1f;
 
-        [YamlIgnore]
         public override ItemType Type { get; set; } = ItemType.SCP1344;
 
         public override string Name { get; set; } = "Night Vision Goggles";
@@ -102,8 +103,20 @@ namespace NightVisionGoggles
             if (ev.Player.IsHost)
                 return;
 
-            if (ev.Scp1344Status == Scp1344Status.Active)
-                ActivateNVG(ev.Player);
+            if (ev.Scp1344Status != Scp1344Status.Active)
+                return;
+
+            if (Lights.ContainsKey(ev.Player))
+            {
+                Config config = Plugin.Instance.Config;
+                ev.Player.DisableEffect(EffectType.Scp1344);
+                ev.Player.EnableEffect(EffectType.NightVision, intensity: config.NightVisionEffectInsentity);
+
+                if (!config.SimulateTemporaryDarkness)
+                    Timing.CallDelayed(config.WearingTime + 0.5f, () => ev.Player.DisableEffect(EffectType.Blinded));
+                return;
+            }
+            ActivateNVG(ev.Player);
         }
 
         private void ActivateNVG(Player player)

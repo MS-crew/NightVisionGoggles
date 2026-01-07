@@ -15,7 +15,7 @@ namespace NightVisionGoggles
         public byte NightVisionEffectInsentity { get; set; } = 1;
 
         [Description("Simulate the temporary darkness when wearing the glasses")]
-        public bool SimulateTemporaryDarkness { get; set; } = false;
+        public bool SimulateTemporaryDarkness { get; set; } =true;
 
         [Description("Wearing time (default 5)")]
         public float WearingTime { get; set; } = 1f;

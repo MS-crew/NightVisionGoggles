@@ -37,7 +37,7 @@ namespace NightVisionGoggles.Patchs
                 new(OpCodes.Brfalse, skip),
 
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldc_R4, Plugin.Instance.Config.WearingTime),
+                new(OpCodes.Ldc_R4, Plugin.Instance.Config.WearingTime),    
                 new(OpCodes.Ldc_I4_3),
                 new(OpCodes.Call, Method(typeof(Scp1344Item), nameof(Scp1344Item.ServerUpdateTimedStatus))),
             ]);

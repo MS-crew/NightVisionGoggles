@@ -17,6 +17,9 @@ namespace NightVisionGoggles.Patchs
             if (!NVG.TrackedSerials.Contains(__instance.ItemSerial))
                 return true;
 
+            if (__instance.Owner.IsHost)
+                return true;
+
             WearOffNightVision(__instance.Owner);
             return false;
         }
@@ -28,6 +31,9 @@ namespace NightVisionGoggles.Patchs
         public static bool Prefix(Scp1344Item __instance, bool spawn, ref ItemPickupBase __result)
         {
             if (!spawn)
+                return true;
+
+            if (__instance.Owner.IsHost)
                 return true;
 
             if (!NVG.TrackedSerials.Contains(__instance.ItemSerial))

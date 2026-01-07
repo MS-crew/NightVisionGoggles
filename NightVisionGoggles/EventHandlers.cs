@@ -14,7 +14,6 @@ namespace NightVisionGoggles
     public class EventHandlers
     {
         public HashSet<Player> DirtyPlayers { get; set; } = [];
-        public HashSet<ushort> DirtyPickupSerials { get; set; } = [];
 
         public void Subscribe()
         {
@@ -37,7 +36,6 @@ namespace NightVisionGoggles
         private void OnWaitingforPlayers()
         {
             DirtyPlayers.Clear();
-            DirtyPickupSerials.Clear();
         }
 
         private void OnVerified(VerifiedEventArgs ev)
