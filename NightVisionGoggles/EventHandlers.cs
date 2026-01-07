@@ -1,15 +1,11 @@
 ﻿using System.Collections.Generic;
 
 using Exiled.API.Features;
-using Exiled.Events.EventArgs.Map;
 using Exiled.Events.EventArgs.Player;
-
-using NightVisionGoggles.Patchs;
 
 using static NightVisionGoggles.NightVisionGoggles;
 
 using Light = Exiled.API.Features.Toys.Light;
-using MapEvent = Exiled.Events.Handlers.Map;
 using PlayerEvent = Exiled.Events.Handlers.Player;
 using ServerEvent = Exiled.Events.Handlers.Server;
 
@@ -27,9 +23,6 @@ namespace NightVisionGoggles
             PlayerEvent.Verified += OnVerified;
             PlayerEvent.ChangingRole += OnChangingRole;
             PlayerEvent.ChangingSpectatedPlayer += OnChangingSpectatedPlayer;
-
-            MapEvent.PickupAdded += OnPickupAdded;
-            MapEvent.PickupDestroyed += OnPickupDestroyed;
         }
 
         public void Unsubscribe()
@@ -38,10 +31,7 @@ namespace NightVisionGoggles
 
             PlayerEvent.Verified -= OnVerified;
             PlayerEvent.ChangingRole -= OnChangingRole;
-            PlayerEvent.ChangingSpectatedPlayer -= OnChangingSpectatedPlayer;
-
-            MapEvent.PickupAdded -= OnPickupAdded;
-            MapEvent.PickupDestroyed -= OnPickupDestroyed;
+            PlayerEvent.ChangingSpectatedPlayer -= OnChangingSpectatedPlayer;;
         }
 
         private void OnWaitingforPlayers()
@@ -61,7 +51,7 @@ namespace NightVisionGoggles
         private void OnChangingRole(ChangingRoleEventArgs ev)
         {
             if (NVG.Lights.ContainsKey(ev.Player))
-                ServerUpdateDeactivatingPatch.WearOffNightVision(ev.Player.ReferenceHub);
+                WearOffNightVision(ev.Player.ReferenceHub);
 
             if (DirtyPlayers.Contains(ev.Player))
             {
@@ -87,26 +77,6 @@ namespace NightVisionGoggles
                 ev.Player.ShowHidedNetworkIdentity(NVG.Lights[ev.NewTarget]?.Base?.netIdentity);
                 DirtyPlayers.Add(ev.Player);
             }
-        }
-
-        private void OnPickupAdded(PickupAddedEventArgs ev)
-        {
-            if (!NVG.Check(ev.Pickup))
-                return;
-
-            if (DirtyPickupSerials.Contains(ev.Pickup.Serial))
-            {
-                ev.Pickup.Destroy();
-                return;
-            }
-
-            DirtyPickupSerials.Add(ev.Pickup.Serial);
-        }
-
-        private void OnPickupDestroyed(PickupDestroyedEventArgs ev)
-        {
-            if (DirtyPickupSerials.Contains(ev.Pickup.Serial))
-                DirtyPickupSerials.Remove(ev.Pickup.Serial);
         }
     }
 }

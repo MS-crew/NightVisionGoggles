@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Exiled.API.Enums;
@@ -30,12 +31,15 @@ namespace NightVisionGoggles
     [CustomItem(ItemType.SCP1344)]
     public class NightVisionGoggles : CustomItem
     {
+        internal static event Action<ReferenceHub> On1344WearOff;
+        internal static void WearOffNightVision(ReferenceHub hub) => On1344WearOff?.Invoke(hub);
+
         internal static NightVisionGoggles NVG { get; private set; }
 
         [YamlIgnore]
         public Dictionary<Player, Light> Lights { get; private set; } = [];
 
-        private Dictionary<Player, CoroutineHandle> trackCameraCoroutines = [];
+        private readonly Dictionary<Player, CoroutineHandle> trackCameraCoroutines = [];
 
         public override uint Id { get; set; } = 757;
 
@@ -65,14 +69,14 @@ namespace NightVisionGoggles
         protected override void SubscribeEvents()
         {
             Scp1344Event.ChangedStatus += OnChangedStatus;
-            ServerUpdateDeactivatingPatch.On1344WearOff += DisableNVG;
+            On1344WearOff += DisableNVG;
             base.SubscribeEvents();
         }
 
         protected override void UnsubscribeEvents()
         {
             Scp1344Event.ChangedStatus -= OnChangedStatus;
-            ServerUpdateDeactivatingPatch.On1344WearOff -= DisableNVG;
+            On1344WearOff -= DisableNVG;
             base.UnsubscribeEvents();
         }
 
@@ -93,6 +97,9 @@ namespace NightVisionGoggles
         private void OnChangedStatus(ChangedStatusEventArgs ev)
         {
             if (!Check(ev.Item))
+                return;
+
+            if (ev.Player.IsHost)
                 return;
 
             if (ev.Scp1344Status == Scp1344Status.Active)

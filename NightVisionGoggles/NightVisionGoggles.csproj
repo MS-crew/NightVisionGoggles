@@ -65,18 +65,17 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="NightVisionGoggles.cs" />
     <Compile Include="Patchs\CanStartUsingPatch.cs" />
-    <Compile Include="Patchs\OnPlayerDisarmedPatch.cs" />
-    <Compile Include="Patchs\ServerUpdateDeactivatingPatch.cs" />
+    <Compile Include="Patchs\DeactivatePatch.cs" />
     <Compile Include="Patchs\SetWearingTime.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ExMod.Exiled">
-      <Version>9.10.2</Version>
+      <Version>9.12.2</Version>
     </PackageReference>
     <PackageReference Include="Lib.Harmony">
-      <Version>2.3.3</Version>
+      <Version>2.2.2</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
