@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using CustomPlayerEffects;
-
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Attributes;
 using Exiled.API.Features.Spawn;
+using Exiled.API.Features.Toys;
 using Exiled.CustomItems.API.Features;
 using Exiled.Events.EventArgs.Scp1344;
 
@@ -17,13 +16,9 @@ using MEC;
 
 using Mirror;
 
-using NightVisionGoggles.Patchs;
-
 using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
 
 using UnityEngine;
-
-using YamlDotNet.Serialization;
 
 using Light = Exiled.API.Features.Toys.Light;
 using Scp1344Event = Exiled.Events.Handlers.Scp1344;
@@ -38,7 +33,6 @@ namespace NightVisionGoggles
 
         internal static NightVisionGoggles NVG { get; private set; }
 
-        [YamlIgnore]
         public Dictionary<Player, Light> Lights { get; private set; } = [];
 
         private readonly Dictionary<Player, CoroutineHandle> trackCameraCoroutines = [];
@@ -116,12 +110,20 @@ namespace NightVisionGoggles
                     Timing.CallDelayed(config.WearingTime + 0.5f, () => ev.Player.DisableEffect(EffectType.Blinded));
                 return;
             }
+
             ActivateNVG(ev.Player);
         }
 
         private void ActivateNVG(Player player)
         {
             Config config = Plugin.Instance.Config;
+
+            if (config.PlaySoundOnUse)
+            {
+                Speaker speaker = Speaker.Create(player.Transform, true, false);
+                speaker.ControllerId = (byte)player.Id;
+                speaker.Play(config.SoundPath, false, true, false);
+            }
 
             player.DisableEffect(EffectType.Scp1344);
             player.EnableEffect(EffectType.NightVision, intensity: config.NightVisionEffectInsentity);
@@ -169,6 +171,9 @@ namespace NightVisionGoggles
         {
             Player player = Player.Get(hub);
 
+            if (!Lights.ContainsKey(player))
+                return;
+
             player.DisableEffects([EffectType.NightVision, EffectType.Blinded]);
             player.ReferenceHub.DisableWearables(WearableElements.Scp1344Goggles);
 
@@ -178,11 +183,13 @@ namespace NightVisionGoggles
                 trackCameraCoroutines.Remove(player);
             }
 
-            GameObject lighObject = Lights[player]?.GameObject;
-
-            Lights.Remove(player);
-            NetworkServer.Destroy(lighObject);
-
+            if (Lights.TryGetValue(player, out Light lighObjectt))
+            {
+                GameObject lighObject = Lights[player]?.GameObject;
+                Lights.Remove(player);
+                NetworkServer.Destroy(lighObject);
+            }
+            
             foreach (Player ply in player.CurrentSpectatingPlayers)
             {
                 Plugin.Instance.EventHandlers.DirtyPlayers.Remove(ply);

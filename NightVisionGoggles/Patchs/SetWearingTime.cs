@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Reflection.Emit;
-using Exiled.API.Features;
 using Exiled.API.Features.Pools;
 
 using HarmonyLib;
