@@ -8,7 +8,7 @@ namespace NightVisionGoggles
     {
         internal static void ShowHidedNetworkIdentity(this Player player, NetworkIdentity identity)
         {
-            Server.SendSpawnMessage.Invoke(null, [identity, player.Connection]);
+            player.Connection.Send(new SpawnMessage() { netId = identity.netId });
         }
 
         internal static void HideNetworkIdentity(this Player player, NetworkIdentity identity)
