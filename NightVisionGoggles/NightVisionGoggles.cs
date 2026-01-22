@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Attributes;
+using Exiled.API.Features.Items;
 using Exiled.API.Features.Spawn;
 using Exiled.API.Features.Toys;
 using Exiled.CustomItems.API.Features;
 using Exiled.Events.EventArgs.Scp1344;
-
-using InventorySystem.Items.Usables.Scp1344;
 
 using MEC;
 
@@ -21,25 +19,24 @@ using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
 using UnityEngine;
 
 using Light = Exiled.API.Features.Toys.Light;
-using Scp1344Event = Exiled.Events.Handlers.Scp1344;
 
 namespace NightVisionGoggles
 {
-    [CustomItem(ItemType.SCP1344)]
-    public class NightVisionGoggles : CustomItem
+    public class NightVisionGoggles : CustomGoggles
     {
-        internal static event Action<ReferenceHub> On1344WearOff;
-        internal static void WearOffNightVision(ReferenceHub hub) => On1344WearOff?.Invoke(hub);
+        private readonly Dictionary<Player, CoroutineHandle> trackCameraCoroutines = [];
 
         internal static NightVisionGoggles NVG { get; private set; }
 
         public Dictionary<Player, Light> Lights { get; private set; } = [];
 
-        private readonly Dictionary<Player, CoroutineHandle> trackCameraCoroutines = [];
-
         public override uint Id { get; set; } = 757;
 
         public override float Weight { get; set; } = 1f;
+
+        public override float WearingTime { get; set; } = 1;
+
+        public override float RemovingTime { get; set; } = 1;
 
         public override ItemType Type { get; set; } = ItemType.SCP1344;
 
@@ -61,20 +58,6 @@ namespace NightVisionGoggles
             base.Destroy();
         }
 
-        protected override void SubscribeEvents()
-        {
-            Scp1344Event.ChangedStatus += OnChangedStatus;
-            On1344WearOff += DisableNVG;
-            base.SubscribeEvents();
-        }
-
-        protected override void UnsubscribeEvents()
-        {
-            Scp1344Event.ChangedStatus -= OnChangedStatus;
-            On1344WearOff -= DisableNVG;
-            base.UnsubscribeEvents();
-        }
-
         protected override void OnWaitingForPlayers()
         {
             Lights.Clear(); 
@@ -89,32 +72,7 @@ namespace NightVisionGoggles
             base.OnWaitingForPlayers();
         }
 
-        private void OnChangedStatus(ChangedStatusEventArgs ev)
-        {
-            if (!Check(ev.Item))
-                return;
-
-            if (ev.Player.IsHost)
-                return;
-
-            if (ev.Scp1344Status != Scp1344Status.Active)
-                return;
-
-            if (Lights.ContainsKey(ev.Player))
-            {
-                Config config = Plugin.Instance.Config;
-                ev.Player.DisableEffect(EffectType.Scp1344);
-                ev.Player.EnableEffect(EffectType.NightVision, intensity: config.NightVisionEffectInsentity);
-
-                if (!config.SimulateTemporaryDarkness)
-                    Timing.CallDelayed(config.WearingTime + 0.5f, () => ev.Player.DisableEffect(EffectType.Blinded));
-                return;
-            }
-
-            ActivateNVG(ev.Player);
-        }
-
-        private void ActivateNVG(Player player)
+        protected override void OnWornGoggles(Player player, Scp1344 goggles)
         {
             Config config = Plugin.Instance.Config;
 
@@ -125,12 +83,7 @@ namespace NightVisionGoggles
                 speaker.Play(config.SoundPath, false, true, false);
             }
 
-            player.DisableEffect(EffectType.Scp1344);
             player.EnableEffect(EffectType.NightVision, intensity: config.NightVisionEffectInsentity);
-            player.ReferenceHub.EnableWearables(WearableElements.Scp1344Goggles);
-
-            if (!config.SimulateTemporaryDarkness)
-                Timing.CallDelayed(config.WearingTime + 0.5f, ()=> player.DisableEffect(EffectType.Blinded));
 
             Light light = Light.Create(player.CameraTransform.position, player.Rotation.eulerAngles, null, spawn: true, color: config.LightSettings.Color);
             light.Transform.SetParent(player.Transform, true);
@@ -161,21 +114,16 @@ namespace NightVisionGoggles
                 ply.HideNetworkIdentity(light.Base.netIdentity);
             }
 
-            Log.Debug($"{player.Nickname} : Activated NVG");
-
             if (config.LightSettings.TrackCameraRotation)
                 trackCameraCoroutines[player] = Timing.RunCoroutine(TrackCameraRotation(player.CameraTransform, light.Transform, config.LightSettings.TrackCameraRotationInterval));
         }
 
-        public void DisableNVG(ReferenceHub hub)
+        protected override void OnRemovedGoggles(Player player, Scp1344 goggles)
         {
-            Player player = Player.Get(hub);
-
             if (!Lights.ContainsKey(player))
                 return;
 
-            player.DisableEffects([EffectType.NightVision, EffectType.Blinded]);
-            player.ReferenceHub.DisableWearables(WearableElements.Scp1344Goggles);
+            player.DisableEffect(EffectType.NightVision);
 
             if (Plugin.Instance.Config.LightSettings.TrackCameraRotation && trackCameraCoroutines.TryGetValue(player, out CoroutineHandle coroutine))
             {
@@ -189,13 +137,11 @@ namespace NightVisionGoggles
                 Lights.Remove(player);
                 NetworkServer.Destroy(lighObject);
             }
-            
+
             foreach (Player ply in player.CurrentSpectatingPlayers)
             {
                 Plugin.Instance.EventHandlers.DirtyPlayers.Remove(ply);
             }
-
-            Log.Debug($"{player.Nickname} : Deactivated NVG");
         }
 
         private IEnumerator<float> TrackCameraRotation(Transform camera, Transform light, float syncInterval)

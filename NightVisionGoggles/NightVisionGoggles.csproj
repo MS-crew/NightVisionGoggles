@@ -96,9 +96,6 @@
     <Compile Include="EventHandlers.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="NightVisionGoggles.cs" />
-    <Compile Include="Patchs\CanStartUsingPatch.cs" />
-    <Compile Include="Patchs\DeactivatePatch.cs" />
-    <Compile Include="Patchs\SetWearingTime.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

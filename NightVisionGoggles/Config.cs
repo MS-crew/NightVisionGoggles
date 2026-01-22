@@ -18,15 +18,6 @@ namespace NightVisionGoggles
 
         public byte NightVisionEffectInsentity { get; set; } = 1;
 
-        [Description("Simulate the temporary darkness when wearing the glasses")]
-        public bool SimulateTemporaryDarkness { get; set; } =true;
-
-        [Description("Wearing time (default 5)")]
-        public float WearingTime { get; set; } = 1f;
-
-        [Description("Removal time (default 5.1 set less than 5.1)")]
-        public float WearingOffTime { get; set; } = 1f;
-
         public NightVisionGoggles NVG { get; set; } = new NightVisionGoggles();
 
         public LightSetting LightSettings { get; set; } = new LightSetting();
