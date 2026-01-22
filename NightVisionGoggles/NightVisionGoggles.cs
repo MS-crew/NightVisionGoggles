@@ -8,13 +8,10 @@ using Exiled.API.Features.Items;
 using Exiled.API.Features.Spawn;
 using Exiled.API.Features.Toys;
 using Exiled.CustomItems.API.Features;
-using Exiled.Events.EventArgs.Scp1344;
 
 using MEC;
 
 using Mirror;
-
-using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
 
 using UnityEngine;
 
