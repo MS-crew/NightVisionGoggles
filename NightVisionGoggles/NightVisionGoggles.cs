@@ -5,7 +5,6 @@ using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Items;
 using Exiled.API.Features.Spawn;
-using Exiled.API.Features.Toys;
 using Exiled.CustomItems.API.Features;
 
 using MEC;
@@ -13,6 +12,8 @@ using MEC;
 using Mirror;
 
 using UnityEngine;
+
+using YamlDotNet.Serialization;
 
 using Light = Exiled.API.Features.Toys.Light;
 
@@ -24,6 +25,7 @@ namespace NightVisionGoggles
 
         internal static NightVisionGoggles NVG { get; private set; }
 
+        [YamlIgnore]
         public Dictionary<Player, Light> Lights { get; private set; } = [];
 
         public override uint Id { get; set; } = 757;
@@ -33,8 +35,6 @@ namespace NightVisionGoggles
         public override float WearingTime { get; set; } = 1;
 
         public override float RemovingTime { get; set; } = 1;
-
-        public override ItemType Type { get; set; } = ItemType.SCP1344;
 
         public override string Name { get; set; } = "Night Vision Goggles";
 
@@ -72,12 +72,12 @@ namespace NightVisionGoggles
         {
             Config config = Plugin.Instance.Config;
 
-            if (config.PlaySoundOnUse)
+            /*if (config.PlaySoundOnUse)
             {
                 Speaker speaker = Speaker.Create(player.Transform, true, false);
                 speaker.ControllerId = (byte)player.Id;
                 speaker.Play(config.SoundPath, false, true, false);
-            }
+            }*/
 
             player.EnableEffect(EffectType.NightVision, intensity: config.NightVisionEffectInsentity);
 
@@ -127,11 +127,10 @@ namespace NightVisionGoggles
                 trackCameraCoroutines.Remove(player);
             }
 
-            if (Lights.TryGetValue(player, out Light lighObjectt))
+            if (Lights.TryGetValue(player, out Light lighObject))
             {
-                GameObject lighObject = Lights[player]?.GameObject;
                 Lights.Remove(player);
-                NetworkServer.Destroy(lighObject);
+                NetworkServer.Destroy(lighObject.GameObject);
             }
 
             foreach (Player ply in player.CurrentSpectatingPlayers)
