@@ -80,9 +80,6 @@
     <PackageReference Include="ExMod.Exiled">
       <Version>9.13.1</Version>
     </PackageReference>
-    <PackageReference Include="Lib.Harmony">
-      <Version>2.2.2</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
