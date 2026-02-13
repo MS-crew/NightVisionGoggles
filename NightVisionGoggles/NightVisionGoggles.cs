@@ -32,10 +32,6 @@ namespace NightVisionGoggles
 
         public override float Weight { get; set; } = 1f;
 
-        public override float WearingTime { get; set; } = 1;
-
-        public override float RemovingTime { get; set; } = 1;
-
         public override string Name { get; set; } = "Night Vision Goggles";
 
         public override string Description { get; set; } = "A night-vision device (NVD), also known as a Night-Vision goggle (NVG), is an optoelectronic device that allows visualization of images in low levels of light, improving the user's night vision.";

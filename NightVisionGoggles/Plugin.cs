@@ -3,14 +3,10 @@
 using Exiled.API.Features;
 using Exiled.CustomItems.API;
 
-using HarmonyLib;
-
 namespace NightVisionGoggles
 {
     public class Plugin : Plugin<Config>
     {
-        private Harmony harmony;
-
         public static Plugin Instance { get; private set; }
 
         public EventHandlers EventHandlers { get; private set; }
@@ -33,15 +29,11 @@ namespace NightVisionGoggles
             Config.NVG.Register();
             EventHandlers.Subscribe();
 
-            harmony = new Harmony(Prefix + DateTime.Now.Ticks);
-            harmony.PatchAll();
-
             base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
-            harmony.UnpatchAll(harmony.Id);
             EventHandlers.Unsubscribe();
             Config.NVG.Unregister();
             
