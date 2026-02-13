@@ -40,11 +40,11 @@
     </Reference>
     <Reference Include="Assembly-CSharp-publicized, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\EXILED_REFERENCES\Assembly-CSharp-publicized.dll</HintPath>
+      <HintPath>$(EXILED_REFERENCES)\Assembly-CSharp-publicized.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mirror-publicized">
-      <HintPath>..\..\..\..\EXILED_REFERENCES\Mirror-publicized.dll</HintPath>
+      <HintPath>$(EXILED_REFERENCES)\Mirror-publicized.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -64,7 +64,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="YamlDotNet">
-      <HintPath>..\..\..\..\EXILED_REFERENCES\YamlDotNet.dll</HintPath>
+      <HintPath>$(EXILED_REFERENCES)\YamlDotNet.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
