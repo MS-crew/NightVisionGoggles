@@ -12,9 +12,10 @@ namespace NightVisionGoggles
 
         public bool Debug { get; set; } = false;
 
+        /*
         public bool PlaySoundOnUse { get; set; } = false;
 
-        public string SoundPath { get; set; } = "C:\\Users\\musta\\Downloads\\Splinter.wav";
+        public string SoundPath { get; set; } = "C:\\Users\\musta\\Downloads\\Splinter.wav";*/
 
         public byte NightVisionEffectInsentity { get; set; } = 1;
 

@@ -41,37 +41,10 @@
     <Reference Include="Assembly-CSharp-publicized, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\EXILED_REFERENCES\Assembly-CSharp-publicized.dll</HintPath>
-    </Reference>
-    <Reference Include="CommandSystem.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\EXILED_REFERENCES\CommandSystem.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.CustomItems, Version=9.12.2.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\EXILED_REFERENCES\Exiled.CustomItems.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.CustomRoles, Version=9.12.2.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\EXILED_REFERENCES\Exiled.CustomRoles.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.Events, Version=9.12.2.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\EXILED_REFERENCES\Exiled.Events.dll</HintPath>
-    </Reference>
-    <Reference Include="Exiled.Loader, Version=9.12.2.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\EXILED_REFERENCES\Exiled.Loader.dll</HintPath>
-    </Reference>
-    <Reference Include="LabApi, Version=1.1.4.2, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\EXILED_REFERENCES\LabApi.dll</HintPath>
-    </Reference>
-    <Reference Include="Mirror">
-      <HintPath>$(EXILED_REFERENCES)\Mirror.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Exiled.API">
-      <HintPath>$(EXILED_REFERENCES)\Exiled.API.dll</HintPath>
+    <Reference Include="Mirror-publicized">
+      <HintPath>..\..\..\..\EXILED_REFERENCES\Mirror-publicized.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -92,6 +65,7 @@
     </Reference>
     <Reference Include="YamlDotNet">
       <HintPath>..\..\..\..\EXILED_REFERENCES\YamlDotNet.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +77,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="ExMod.Exiled">
+      <Version>9.13.1</Version>
+    </PackageReference>
     <PackageReference Include="Lib.Harmony">
       <Version>2.2.2</Version>
     </PackageReference>
