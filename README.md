@@ -32,15 +32,11 @@ Thank you for using our plugin and helping us improve it!
 is_enabled: true
 debug: false
 night_vision_effect_insentity: 1
-# Simulate the temporary darkness when wearing the glasses
-simulate_temporary_darkness: false
-# Wearing time (default 5)
-wearing_time: 1
-# Removal time (default 5.1 set less than 5.1)
-wearing_off_time: 1
 n_v_g:
   id: 757
   weight: 1
+  wearing_time: 1
+  removing_time: 1
   name: 'Night Vision Goggles'
   description: 'A night-vision device (NVD), also known as a Night-Vision goggle (NVG), is an optoelectronic device that allows visualization of images in low levels of light, improving the user''s night vision.'
   spawn_properties:
@@ -50,6 +46,9 @@ n_v_g:
     role_spawn_points: []
     room_spawn_points: []
     locker_spawn_points: []
+  type: SCP1344
+  remove1344_effect: true
+  can_be_remove_safely: true
   scale:
     x: 1
     y: 1
@@ -59,13 +58,14 @@ light_settings:
   intensity: 70
   spot_angle: 90
   inner_spot_angle: 0
+  movement_smoothing: 60
   color:
     r: 0
     g: 1
     b: 0
     a: 1
   track_camera_rotation: true
-  track_camera_rotation_interval: 0.1
+  track_camera_rotation_interval: 0.100000001
   # You can use this types `Spot, Point, Directional`
   light_type: Spot
   shadow_type: None
