@@ -21,7 +21,7 @@ jobs:
       with:
         repository: MS-crew/SL-References
         path: References
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REFERANCES_REPO_KEY }}
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
