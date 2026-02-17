@@ -27,22 +27,35 @@ jobs:
         New-Item -ItemType Directory -Force -Path "Temp_Unzip"
         Expand-Archive -Path "RepoDownload\References.zip" -DestinationPath "Temp_Unzip" -Force
         
-        # DLL'leri ana klasöre taşı
+        # Tüm DLL'leri bul ve References klasörüne yığ
         Get-ChildItem -Path "Temp_Unzip" -Recurse -Filter "*.dll" | ForEach-Object {
             Move-Item -Path $_.FullName -Destination "References" -Force
         }
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
 
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2
-
-    - name: Restore NuGet Packages
-      run: nuget restore NightVisionGoggles.sln
-
-    - name: Build with MSBuild
-      run: msbuild NightVisionGoggles.csproj /p:Configuration=Release /p:EXILED_REFERENCES="${{ github.workspace }}\References"
+    - name: Build Project Directly
+      shell: pwsh
+      run: |
+        # Klasördeki .csproj dosyasını bul (Adı ne olursa olsun)
+        $projectFile = Get-ChildItem -Recurse -Filter "*.csproj" | Select-Object -First 1
+        
+        if (-not $projectFile) {
+            Write-Error "HATA: .csproj dosyası bulunamadı!"
+            exit 1
+        }
+        
+        Write-Host "Bulunan Proje: $($projectFile.FullName)"
+        
+        # 1. Restore (Doğrudan proje dosyasına)
+        dotnet restore "$($projectFile.FullName)"
+        
+        # 2. Build (Doğrudan proje dosyasına ve EXILED_REFERENCES yolunu elle vererek)
+        # --no-restore eklemiyoruz çünkü yukarıdaki restore bazen yetmeyebilir, build sırasında garanti olsun.
+        dotnet build "$($projectFile.FullName)" --configuration Release /p:EXILED_REFERENCES="${{ github.workspace }}\References"
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
