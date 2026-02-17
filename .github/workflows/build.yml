@@ -5,9 +5,6 @@ on:
     branches: [ "master" ]
   workflow_dispatch:
 
-env:
-  EXILED_REFERENCES: ${{ github.workspace }}\References
-
 jobs:
   build:
     runs-on: windows-latest
@@ -21,31 +18,31 @@ jobs:
       with:
         repository: MS-crew/SL-References
         token: ${{ secrets.REFERANCES_REPO_KEY }}
-        path: Temp_Repo 
+        path: RepoDownload 
 
-    - name: Extract References
+    - name: Force Extract References
       shell: pwsh
       run: |
-        # Hedef klasörü oluştur (References)
-        New-Item -ItemType Directory -Force -Path "${{ env.EXILED_REFERENCES }}"
-
-        # Temp_Repo klasörüne inen References.zip dosyasını alıp hedef yere açıyoruz
-        Expand-Archive -Path "Temp_Repo\References.zip" -DestinationPath "${{ env.EXILED_REFERENCES }}" -Force
+        New-Item -ItemType Directory -Force -Path "References"
+        New-Item -ItemType Directory -Force -Path "Temp_Unzip"
+        Expand-Archive -Path "RepoDownload\References.zip" -DestinationPath "Temp_Unzip" -Force
         
-        # KONTROL (Hata olursa görelim diye):
-        Write-Host "--- AÇILAN DOSYALAR ---"
-        Get-ChildItem -Path "${{ env.EXILED_REFERENCES }}" -Recurse
+        # DLL'leri ana klasöre taşı
+        Get-ChildItem -Path "Temp_Unzip" -Recurse -Filter "*.dll" | ForEach-Object {
+            Move-Item -Path $_.FullName -Destination "References" -Force
+        }
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
 
     - name: Restore NuGet Packages
-      run: dotnet restore
+      run: nuget restore NightVisionGoggles.sln
 
-    - name: Build Plugin
-      run: dotnet build --configuration Release --no-restore
+    - name: Build with MSBuild
+      run: msbuild NightVisionGoggles.csproj /p:Configuration=Release /p:EXILED_REFERENCES="${{ github.workspace }}\References"
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
