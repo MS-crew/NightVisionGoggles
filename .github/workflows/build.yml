@@ -9,45 +9,31 @@ jobs:
   build:
     runs-on: windows-latest
 
-    # BURASI ÖNEMLİ: csproj dosyanın aradığı değişkeni burada tanımlıyoruz
     env:
       EXILED_REFERENCES: ${{ github.workspace }}\References
 
     steps:
-    # 1. Senin plugin kodlarını indir
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # 2. Referans DLL'lerini ZIP olarak indir ve klasöre çıkar
-    - name: Download and Extract References
-      shell: pwsh
-      run: |
-        # GitHub'daki 'blob' linkini 'raw' linkine çevirip indiriyoruz
-        $url = "https://github.com/MS-crew/SL-References/raw/main/References.zip"
-        $output = "References.zip"
-        $destination = "${{ github.workspace }}\References"
-        
-        Write-Host "Downloading References from $url..."
-        Invoke-WebRequest -Uri $url -OutFile $output
-        
-        Write-Host "Extracting to $destination..."
-        Expand-Archive -Path $output -DestinationPath $destination -Force
+    - name: Checkout References
+      uses: actions/checkout@v4
+      with:
+        repository: MS-crew/SL-References
+        path: References
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-    # 3. .NET Framework ortamı
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x # Build araçları için güncel sürüm
+        dotnet-version: 8.0.x
 
-    # 4. NuGet paketleri
     - name: Restore NuGet Packages
       run: dotnet restore
 
-    # 5. Projeyi Derle
     - name: Build Plugin
       run: dotnet build --configuration Release --no-restore
 
-    # 6. Oluşan DLL'i Artifact olarak yükle
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
