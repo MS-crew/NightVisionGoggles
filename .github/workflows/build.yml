@@ -22,7 +22,20 @@ jobs:
         repository: MS-crew/SL-References
         path: References
         token: ${{ secrets.REFERANCES_REPO_KEY }}
-
+    - name: Unzip References
+      shell: pwsh
+      run: |
+        cd References
+        Get-ChildItem
+        if (Test-Path "References.zip") 
+        {
+            Write-Host "Zip bulundu, açılıyor..."
+            Expand-Archive -Path "References.zip" -DestinationPath . -Force
+        }
+        
+        Write-Host "Zip açıldı, içerik:"
+        Get-ChildItem -Recurse
+        
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
