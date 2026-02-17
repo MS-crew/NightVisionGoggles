@@ -5,44 +5,40 @@ on:
     branches: [ "master" ]
   workflow_dispatch:
 
+env:
+  EXILED_REFERENCES: ${{ github.workspace }}\References
+
 jobs:
   build:
     runs-on: windows-latest
 
-    env:
-      EXILED_REFERENCES: ${{ github.workspace }}\References
-
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-
-    - name: Checkout References
-      uses: actions/checkout@v4
-      with:
-        repository: MS-crew/SL-References
-        path: References
-        token: ${{ secrets.REFERANCES_REPO_KEY }}
-    - name: Unzip References
-      shell: pwsh
-      run: |
-        cd References
-        Get-ChildItem
-        if (Test-Path "References.zip") 
-        {
-            Write-Host "Zip bulundu, açılıyor..."
-            Expand-Archive -Path "References.zip" -DestinationPath . -Force
-        }
-        
-        Write-Host "Zip açıldı, içerik:"
-        Get-ChildItem -Recurse
-        
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
-    - name: Restore NuGet Packages
-      run: dotnet restore
+    - name: Setup Nuget
+      uses: nuget/setup-nuget@v2
+
+    - uses: actions/checkout@v4
+
+    - name: Download References Repo
+      uses: actions/checkout@v4
+      with:
+        repository: MS-crew/SL-References
+        token: ${{ secrets.REFERANCES_REPO_KEY }}
+        path: Temp_Download
+
+    - name: Extract References
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Force -Path "${{ env.EXILED_REFERENCES }}"
+        Expand-Archive -Path "Temp_Download\References.zip" -DestinationPath "${{ env.EXILED_REFERENCES }}" -Force
+
+        if (Test-Path "${{ env.EXILED_REFERENCES }}\References") {
+            Move-Item -Path "${{ env.EXILED_REFERENCES }}\References\*" -Destination "${{ env.EXILED_REFERENCES }}" -Force
+        }
 
     - name: Build Plugin
       run: dotnet build --configuration Release --no-restore
